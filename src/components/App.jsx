@@ -25,7 +25,7 @@ export class App extends Component {
       <div className="App">
         <Searchbar />
 
-        <RotatingLines />
+        {/* <RotatingLines /> */}
 
         <ImageGallery />
 
