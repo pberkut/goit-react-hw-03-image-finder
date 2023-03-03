@@ -10,19 +10,28 @@ import { Modal } from './Modal';
 import { Searchbar } from './Searchbar';
 export class App extends Component {
   state = {
-    showModal: false,
+    // showModal: false,
     query: '',
+    selectedImage: null,
+    alt: null,
   };
 
   handleSubmit = query => {
     this.setState({ query });
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
+  handleSelectedImage = (url, alt) => {
+    this.setState({ selectedImage: url, alt });
   };
+
+  handleCloseModal = () => {
+    this.setState({ selectedImage: null });
+  };
+  // toggleModal = () => {
+  //   this.setState(({ showModal }) => ({
+  //     showModal: !showModal,
+  //   }));
+  // };
 
   render() {
     return (
@@ -31,9 +40,18 @@ export class App extends Component {
 
         <Searchbar onSearch={this.handleSubmit} />
 
-        <ImageGallery query={this.state.query} />
+        <ImageGallery
+          query={this.state.query}
+          onSelectedImage={this.handleSelectedImage}
+        />
 
-        {this.state.showModal && <Modal onClose={this.toggleModal} />}
+        {this.state.selectedImage && (
+          <Modal
+            onClose={this.handleCloseModal}
+            selectedImage={this.state.selectedImage}
+            alt={this.state.alt}
+          />
+        )}
       </div>
     );
   }

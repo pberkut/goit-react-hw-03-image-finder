@@ -49,7 +49,10 @@ export class ImageGallery extends Component {
       return (
         <>
           <ul className="ImageGallery">
-            <ImageGalleryItem images={images} />
+            <ImageGalleryItem
+              images={images}
+              onSelectedImage={this.props.onSelectedImage}
+            />
           </ul>
           <Button onLoadMore={this.handleLoadMore} />
         </>
