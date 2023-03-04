@@ -1,16 +1,11 @@
-/* 
-https://pixabay.com/api/?key=32766360-76e7eba189222bd8a15da9e43&q=cat&safesearch=true&per_page=12&page=1
-*/
-
 import { Component } from 'react';
-// import { RotatingLines } from 'react-loader-spinner';
-// import { Button } from './Button/Button';
 import { ImageGallery } from './ImageGallery';
 import { Modal } from './Modal';
 import { Searchbar } from './Searchbar';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export class App extends Component {
   state = {
-    // showModal: false,
     query: '',
     selectedImage: null,
     alt: null,
@@ -27,17 +22,10 @@ export class App extends Component {
   handleCloseModal = () => {
     this.setState({ selectedImage: null });
   };
-  // toggleModal = () => {
-  //   this.setState(({ showModal }) => ({
-  //     showModal: !showModal,
-  //   }));
-  // };
 
   render() {
     return (
       <div className="App">
-        {/* <RotatingLines /> */}
-
         <Searchbar onSearch={this.handleSubmit} />
 
         <ImageGallery
@@ -52,6 +40,8 @@ export class App extends Component {
             alt={this.state.alt}
           />
         )}
+
+        <ToastContainer autoClose={1500} />
       </div>
     );
   }

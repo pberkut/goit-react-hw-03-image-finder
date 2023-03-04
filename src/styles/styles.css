@@ -208,3 +208,9 @@ img {
 .Button:focus {
   background-color: #303f9f;
 }
+
+.Spinner {
+  height: 75vh;
+  display: flex;
+  justify-content: center;
+}

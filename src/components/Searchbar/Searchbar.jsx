@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { toast } from 'react-toastify';
 import searchIcon from '../../image/search.svg';
 
 export class Searchbar extends Component {
@@ -8,6 +9,10 @@ export class Searchbar extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
+
+    if (this.state.value.trim() === '') {
+      toast.error('Enter search image');
+    }
 
     this.props.onSearch(this.state.value);
 

@@ -1,7 +1,9 @@
 import { Component } from 'react';
 import { getImages } from '../../services/pixabay-API';
+import { RotatingLines } from 'react-loader-spinner';
 import { Button } from 'components/Button';
 import { ImageGalleryItem } from 'components/ImageGalleryItem';
+import { toast } from 'react-toastify';
 
 export class ImageGallery extends Component {
   state = {
@@ -18,13 +20,18 @@ export class ImageGallery extends Component {
       prevProps.query !== this.props.query ||
       prevState.page !== this.state.page
     ) {
+      this.setState({ status: 'pending' });
       getImages(query, page)
-        .then(data =>
+        .then(data => {
+          if (data.hits.length === 0) {
+            return Promise.reject(`Not fined image: ${query}`);
+          }
+
           this.setState({
             images: [...prevState.images, ...data.hits],
             status: 'resolved',
-          })
-        )
+          });
+        })
         .catch(error =>
           this.setState({
             error,
@@ -43,7 +50,12 @@ export class ImageGallery extends Component {
   render() {
     const { images, error, status } = this.state;
 
-    if (status === 'pending') return <p>Loading...</p>;
+    if (status === 'pending')
+      return (
+        <div className="Spinner">
+          <RotatingLines />
+        </div>
+      );
 
     if (status === 'resolved')
       return (
@@ -58,8 +70,6 @@ export class ImageGallery extends Component {
         </>
       );
 
-    if (status === 'rejected') return <p>Error:${error} </p>;
-
-    // return;
+    if (status === 'rejected') return toast.error(error);
   }
 }
