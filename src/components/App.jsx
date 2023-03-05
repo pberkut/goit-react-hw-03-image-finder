@@ -44,7 +44,7 @@ export class App extends Component {
         });
       } catch (error) {
         this.setState({ error, status: 'rejected' });
-        toast.error(`$Something went wrong`);
+        toast.error(`Something went wrong`);
       }
     }
 
