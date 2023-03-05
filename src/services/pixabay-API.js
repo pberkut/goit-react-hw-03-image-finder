@@ -6,6 +6,7 @@ export const getImages = (query, page) => {
   return fetch(
     `${BASE_URL}?key=${KEY}&q=${query}&per_page=${PER_PAGE}&page=${page}`
   ).then(response => {
+    // console.log(response);
     if (!response.ok) {
       return Promise.reject(new Error(`Error ${response.message}`));
     }
