@@ -1,75 +1,67 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
+import { Searchbar } from './Searchbar/Searchbar';
+import { fetchImagesWithQuery, handleFetchData } from '../services/pixabay-API';
 import { ImageGallery } from './ImageGallery';
-import { Modal } from './Modal';
-import { Searchbar } from './Searchbar';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { getImages } from '../services/pixabay-API';
-import { toast } from 'react-toastify';
 import { Button } from './Button';
+import { Loader } from './Loader';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Error } from './Error';
 
 export class App extends PureComponent {
   state = {
     query: '',
-    selectedImage: null,
-    tags: null,
-    images: [],
-    error: null,
-    status: 'idle',
     totalPages: 0,
     page: 1,
+    images: [],
+    error: false,
+    status: 'idle',
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(_, prevState) {
     const { query, page } = this.state;
-    // const { query } = this.props;
 
     if (prevState.query !== query) {
       this.setState({ status: 'pending', page: 1 });
-      getImages(query, 1)
-        .then(data => {
-          // when not fined images
-          if (data.hits.length === 0) {
-            toast.info(`Not fined image: ${query}`);
+      try {
+        const data = await fetchImagesWithQuery(query, 1);
 
-            this.setState({
-              images: [],
-              totalPages: 0,
-              status: 'rejected',
-            });
-            return;
-          }
+        if (data.images.length === 0) {
+          toast.info(`"${query}" not found!`);
 
-          this.setState({
-            images: [...data.hits],
-            status: 'resolved',
-            totalPages: data.totalHits,
+          return this.setState({
+            images: [],
+            status: 'not found',
+            totalPages: 0,
           });
-        })
-        .catch(error =>
-          this.setState({
-            error,
-            status: 'rejected',
-          })
-        );
+        }
+
+        const handleImages = handleFetchData(data.images);
+        this.setState({
+          images: handleImages,
+          status: 'resolved',
+          totalPages: data.totalPages,
+        });
+      } catch (error) {
+        this.setState({ error, status: 'rejected' });
+        toast.error(`$Something went wrong`);
+      }
     }
 
     if (prevState.page !== page && page !== 1) {
       this.setState({ status: 'pending' });
-      getImages(query, page)
-        .then(data => {
-          this.setState(prevState => ({
-            images: [...prevState.images, ...data.hits],
-            status: 'resolved',
-            totalPages: data.totalHits,
-          }));
-        })
-        .catch(error =>
-          this.setState({
-            error,
-            status: 'rejected',
-          })
-        );
+      try {
+        const data = await fetchImagesWithQuery(query, page);
+        const handleImages = handleFetchData(data.images);
+        this.setState(({ images }) => ({
+          images: [...images, ...handleImages],
+          status: 'resolved',
+          totalPages: data.totalPages,
+        }));
+      } catch (error) {
+        this.setState({ error, status: 'rejected' });
+        toast.error(`$Something went wrong`);
+      }
     }
   }
 
@@ -81,40 +73,22 @@ export class App extends PureComponent {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
-  };
-
-  handleSelectedImage = (url, tags) => {
-    this.setState({ selectedImage: url, tags });
-  };
-
-  handleCloseModal = () => {
-    this.setState({ selectedImage: null });
+    const y = document.body.scrollHeight;
+    window.scrollTo(0, y);
   };
 
   render() {
-    const { images, status } = this.state;
+    const { images, status, page, totalPages, error } = this.state;
+    const availablePages = totalPages > page;
 
     return (
-      <div className="App">
-        <Searchbar onSearch={this.handleSubmit} />
-
-        {status === 'resolved' && (
-          <ImageGallery
-            images={images}
-            onSelectedImage={this.handleSelectedImage}
-          />
-        )}
-        <Button onLoadMore={this.handleLoadMore} />
-
-        {this.state.selectedImage && (
-          <Modal
-            onClose={this.handleCloseModal}
-            selectedImage={this.state.selectedImage}
-            alt={this.state.tags}
-          />
-        )}
-
-        <ToastContainer autoClose={1500} />
+      <div>
+        <Searchbar onSubmit={this.handleSubmit} />
+        {status === 'pending' && <Loader />}
+        {images.length > 0 && <ImageGallery images={images} />}
+        {availablePages && <Button onLoadMore={this.handleLoadMore} />}
+        {status === 'rejected' && <Error error={error.message} />}
+        <ToastContainer position="top-right" autoClose={1500} />
       </div>
     );
   }
