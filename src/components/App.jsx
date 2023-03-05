@@ -31,7 +31,7 @@ export class App extends Component {
 
           return this.setState({
             images: [],
-            status: 'notFound',
+            status: 'notFoundImage',
             totalPages: 0,
           });
         }
