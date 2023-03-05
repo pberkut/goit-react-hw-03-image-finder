@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Searchbar } from './Searchbar/Searchbar';
+import { Searchbar } from './Searchbar';
 import { fetchImagesWithQuery, handleFetchData } from '../services/pixabay-API';
 import { ImageGallery } from './ImageGallery';
 import { Button } from './Button';
@@ -31,7 +31,7 @@ export class App extends PureComponent {
 
           return this.setState({
             images: [],
-            status: 'not found',
+            status: 'notFound',
             totalPages: 0,
           });
         }

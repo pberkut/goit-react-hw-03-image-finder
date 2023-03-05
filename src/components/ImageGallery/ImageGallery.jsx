@@ -1,4 +1,4 @@
-import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
+import { ImageGalleryItem } from 'components/ImageGalleryItem';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 
@@ -19,8 +19,6 @@ export class ImageGallery extends Component {
     );
   }
 }
-
-// export const ImageGallery = ({ images }) => {};
 
 ImageGallery.propTypes = {
   images: PropTypes.arrayOf(
