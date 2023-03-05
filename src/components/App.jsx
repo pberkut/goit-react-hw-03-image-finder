@@ -73,8 +73,6 @@ export class App extends PureComponent {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
-    const y = document.body.scrollHeight;
-    window.scrollTo(0, y);
   };
 
   render() {
