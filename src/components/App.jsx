@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import { Component } from 'react';
 import { Searchbar } from './Searchbar';
 import { fetchImagesWithQuery, handleFetchData } from '../services/pixabay-API';
 import { ImageGallery } from './ImageGallery';
@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Error } from './Error';
 
-export class App extends PureComponent {
+export class App extends Component {
   state = {
     query: '',
     totalPages: 0,
